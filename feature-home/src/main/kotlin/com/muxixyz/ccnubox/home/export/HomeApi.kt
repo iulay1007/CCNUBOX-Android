@@ -1,11 +1,7 @@
 package com.muxixyz.ccnubox.home.export
 
-import com.muxixyz.ccnubox.home.data.domain.HomeUseCases
+import com.muxixyz.ccnubox.home.data.HomeRepository
 
-class HomeApi(private val homeUseCases: HomeUseCases): IHomeExportApi {
-
-    override suspend fun getCarouselImages(): List<String> {
-        return homeUseCases.getCarouselImages()
-    }
+class HomeApi(private val homeRepository: HomeRepository): IHomeExportApi {
 
 }

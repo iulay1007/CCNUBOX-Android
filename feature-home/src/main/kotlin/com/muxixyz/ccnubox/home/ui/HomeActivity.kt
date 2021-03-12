@@ -47,7 +47,7 @@ class HomeActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         initView()
 
 
-        model.refreshCarousel()
+        model.refreshTodos()
     }
 
     private fun initView() {

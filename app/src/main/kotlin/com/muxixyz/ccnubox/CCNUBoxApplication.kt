@@ -1,10 +1,9 @@
 package com.muxixyz.ccnubox
 
 import android.app.Application
-import android.content.Context
-import android.content.Intent
 import com.alibaba.android.arouter.launcher.ARouter
 import com.muxixyz.ccnubox.home.export.homeKoinProvider
+import com.muxixyz.ccnubox.timetable.export.timetableKoinProvider
 import com.muxixyz.ccnubox.iokit.export.ioKitKoinProvider
 import com.muxixyz.ccnubox.schedule.export.scheduleKoinProvider
 import org.koin.android.ext.koin.androidContext
@@ -31,7 +30,8 @@ class CCNUBoxApplication : Application() {
             modules(
                 homeKoinProvider,
                 ioKitKoinProvider,
-                scheduleKoinProvider
+                scheduleKoinProvider,
+                timetableKoinProvider
             )
         }
     }

@@ -56,8 +56,10 @@ android {
 
     sourceSets["main"].java.srcDir("src/main/kotlin")
 
-    dataBinding {
-        isEnabled = true
+    buildFeatures {
+        dataBinding = true
+        // for view binding :
+        // viewBinding = true
     }
 
     testOptions {
