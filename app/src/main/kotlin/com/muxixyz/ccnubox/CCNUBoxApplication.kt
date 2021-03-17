@@ -2,10 +2,9 @@ package com.muxixyz.ccnubox
 
 import android.app.Application
 import com.alibaba.android.arouter.launcher.ARouter
-import com.muxixyz.ccnubox.home.export.homeKoinProvider
-import com.muxixyz.ccnubox.timetable.export.timetableKoinProvider
 import com.muxixyz.ccnubox.iokit.export.ioKitKoinProvider
-import com.muxixyz.ccnubox.schedule.export.scheduleKoinProvider
+import com.muxixyz.ccnubox.main.export.mainKoinProvider
+import com.muxixyz.ccnubox.profile.export.profileKoinProvider
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
@@ -28,10 +27,9 @@ class CCNUBoxApplication : Application() {
             androidContext(this@CCNUBoxApplication)
             androidFileProperties()
             modules(
-                homeKoinProvider,
+                mainKoinProvider,
                 ioKitKoinProvider,
-                scheduleKoinProvider,
-                timetableKoinProvider
+                profileKoinProvider
             )
         }
     }
