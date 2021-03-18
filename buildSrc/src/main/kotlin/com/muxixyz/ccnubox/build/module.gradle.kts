@@ -45,8 +45,10 @@ configure<LibraryExtension> {
         isAbortOnError = false
     }
 
-    dataBinding {
-        isEnabled = true
+    buildFeatures {
+        dataBinding = true
+        // for view binding :
+        // viewBinding = true
     }
 
     sourceSets["main"].java.srcDir("src/main/kotlin")

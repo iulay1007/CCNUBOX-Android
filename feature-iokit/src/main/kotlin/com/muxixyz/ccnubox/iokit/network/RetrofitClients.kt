@@ -45,7 +45,7 @@ class RetrofitClients {
             .build()
         Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl("")
+            .baseUrl("https://baidu.com/")
             .client(okHttpClient)
             .build()
     }

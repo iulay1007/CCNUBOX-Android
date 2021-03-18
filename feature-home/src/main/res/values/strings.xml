@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="home">首页</string>
-    <string name="journey">日程</string>
-    <string name="tools">工具</string>
-    <string name="profile">我的</string>
-</resources>
