@@ -26,7 +26,7 @@ val mainKoinProvider: Module = module {
 
     viewModel { MainViewModel(get()) }
     viewModel { HomeViewModel() }
-    viewModel { ScheduleViewModel(get(),get()) }
+    viewModel { ScheduleViewModel(get(), get()) }
     viewModel { TodoViewModel(get()) }
 
     single<IMainExportApi> { MainApi(get(), get()) }
@@ -38,36 +38,17 @@ val mainKoinProvider: Module = module {
 
     // database
     single {
-        Room.databaseBuilder(androidApplication(), ScheduleDatabase::class.java, "schedule")
+        Room.databaseBuilder(androidApplication(), AppDatabase::class.java, "ccnubox")
             .build()
     }
-    single { get<ScheduleDatabase>().scheduleDao() }
+    single { get<AppDatabase>().scheduleDao() }
 
-    single {
-        Room.databaseBuilder(
-            androidApplication(),
-            DerivedScheduleDatabase::class.java,
-            "derived schedule"
-        )
-            .build()
-    }
-    single { get<DerivedScheduleDatabase>().derivedScheduleDao() }
+    single { get<AppDatabase>().derivedScheduleDao() }
 
-    single {
-        Room.databaseBuilder(androidApplication(), CourseDatabase::class.java, "course")
-            .build()
-    }
-    single { get<CourseDatabase>().courseDao() }
+    single { get<AppDatabase>().courseDao() }
 
-    single {
-        Room.databaseBuilder(
-            androidApplication(),
-            TimetableRecordDatabase::class.java,
-            "timetable record"
-        )
-            .build()
-    }
-    single { get<TimetableRecordDatabase>().timetableRecordDao() }
+    single { get<AppDatabase>().timetableRecordDao() }
+
 
     single { ScheduleLocalRepo(androidApplication(), get(), get()) }
 

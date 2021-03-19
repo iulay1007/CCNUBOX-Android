@@ -71,8 +71,3 @@ interface DerivedScheduleDao {
     @Query("delete from databasederivedSchedule where id = :derivedScheduleId")
     suspend fun deleteDerivedScheduleById(derivedScheduleId: Int)
 }
-
-@Database(entities = [DatabaseDerivedSchedule::class], version = 1)
-abstract class DerivedScheduleDatabase : RoomDatabase() {
-    abstract fun derivedScheduleDao(): DerivedScheduleDao
-}

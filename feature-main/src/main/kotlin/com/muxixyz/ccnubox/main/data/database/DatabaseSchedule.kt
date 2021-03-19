@@ -83,8 +83,3 @@ interface ScheduleDao {
     @Query("delete from databaseschedule where id = :scheduleId")
     suspend fun deleteScheduleById(scheduleId: String)
 }
-
-@Database(entities = [DatabaseSchedule::class], version = 1)
-abstract class ScheduleDatabase : RoomDatabase() {
-    abstract fun scheduleDao(): ScheduleDao
-}

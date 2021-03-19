@@ -57,8 +57,3 @@ interface CourseDao {
     @Query("delete from databasecourse where id = :courseId")
     suspend fun deleteCourseById(courseId: String)
 }
-
-@Database(entities = [DatabaseCourse::class], version = 1)
-abstract class CourseDatabase : RoomDatabase() {
-    abstract fun courseDao(): CourseDao
-}
