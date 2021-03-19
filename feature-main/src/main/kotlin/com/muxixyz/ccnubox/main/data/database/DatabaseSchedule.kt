@@ -7,8 +7,6 @@ import java.util.*
 
 @Entity
 data class DatabaseSchedule constructor(
-    @PrimaryKey
-    var id: String,
     var title: String,
     var content: String,
     var isInterval: Boolean, // false 为时间点，true 为时间段。时间点类型的只有一个 startTime
@@ -24,7 +22,45 @@ data class DatabaseSchedule constructor(
     var createdAt: String?,
     var updatedAt: String?,
     var sortKey: String // 用于排序的 key，因为其他产品待办列表里都可以自己调整顺序，所以需要给一个字段。初始值可以给毫秒级时间戳
-)
+) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
+
+    constructor(
+        id: Int,
+        title: String,
+        content: String,
+        isInterval: Boolean,
+        startTime: String,
+        endTime: String,
+        repeatMode: Int,
+        cron: String?,
+        kind: Int,
+        priority: Int,
+        done: Boolean,
+        categoryId: Int,
+        cellColorId: Int,
+        createdAt: String?,
+        updatedAt: String?,
+        sortKey: String
+    ) : this(
+        title,
+        content,
+        isInterval,
+        startTime,
+        endTime,
+        repeatMode,
+        cron,
+        kind,
+        priority,
+        done,
+        categoryId,
+        cellColorId,
+        createdAt,
+        updatedAt,
+        sortKey
+    )
+}
 
 fun List<DatabaseSchedule>.asDomainModel(): List<Schedule> {
     return map {
@@ -69,17 +105,17 @@ interface ScheduleDao {
     suspend fun insertSchedules(schedules: List<DatabaseSchedule>)
 
     @Query("SELECT * FROM databaseschedule WHERE id = :scheduleId")
-    suspend fun getScheduleById(scheduleId: String): DatabaseSchedule?
+    suspend fun getScheduleById(scheduleId: Int): DatabaseSchedule?
 
     @Update
     suspend fun updateSchedule(schedule: DatabaseSchedule)
 
     @Query("UPDATE databaseschedule SET done = :done WHERE id = :scheduleId")
-    suspend fun updateDone(scheduleId: String, done: Boolean)
+    suspend fun updateDone(scheduleId: Int, done: Boolean)
 
     @Query("delete from databaseschedule")
     fun deleteAllSchedules()
 
     @Query("delete from databaseschedule where id = :scheduleId")
-    suspend fun deleteScheduleById(scheduleId: String)
+    suspend fun deleteScheduleById(scheduleId: Int)
 }

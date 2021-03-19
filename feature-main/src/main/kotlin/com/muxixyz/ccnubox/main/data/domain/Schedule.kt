@@ -6,7 +6,7 @@ import java.text.DateFormat.LONG
 import java.util.*
 
 data class Schedule(
-    var id: String,
+    var id: Int,
     var title: String,
     var content: String,
     var isInterval: Boolean, // false 为时间点，true 为时间段。时间点类型的只有一个 startTime

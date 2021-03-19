@@ -11,7 +11,7 @@ data class NetworkScheduleContainer(val todos: List<NetworkSchedule>) {
             (DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.CHINA))
         return todos.map {
             DatabaseSchedule(
-                id = it.id.toString(),
+                id = it.id,
                 title = it.title,
                 content = it.content,
                 isInterval = false,
@@ -57,7 +57,7 @@ fun NetworkScheduleContainer.asDomainModel(): List<Schedule> {
     val dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, Locale.CHINA)
     return todos.map {
         Schedule(
-            id = it.id.toString(),
+            id = it.id,
             title = it.title,
             content = it.content,
             isInterval = false,

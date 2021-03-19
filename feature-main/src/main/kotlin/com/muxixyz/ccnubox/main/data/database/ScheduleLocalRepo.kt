@@ -25,7 +25,7 @@ class ScheduleLocalRepo(
         }
     }
 
-    suspend fun getScheduleById(id: String): Result<Schedule> =
+    suspend fun getScheduleById(id: Int): Result<Schedule> =
         withContext(Dispatchers.IO) {
             try {
                 val schedule = scheduleDao.getScheduleById(id)
@@ -39,16 +39,16 @@ class ScheduleLocalRepo(
             }
         }
 
-    suspend fun deleteSchedule(id: String) = withContext(Dispatchers.IO) {
+    suspend fun deleteSchedule(id: Int) = withContext(Dispatchers.IO) {
         scheduleDao.deleteScheduleById(id)
     }
 
-    suspend fun updateSchedule(id: String, schedule: Schedule) =
+    suspend fun updateSchedule(id: Int, schedule: Schedule) =
         withContext(Dispatchers.IO) {
             scheduleDao.updateSchedule(schedule.asDatabaseModel())
         }
 
-    suspend fun updateScheduleDone(id: String, done: Boolean) =
+    suspend fun updateScheduleDone(id: Int, done: Boolean) =
         withContext(Dispatchers.IO) {
             scheduleDao.updateDone(id, done)
         }
