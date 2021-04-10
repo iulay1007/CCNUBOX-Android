@@ -22,4 +22,5 @@ dependencies {
     implementation(Deps.jetpackLifeCycleRuntimeGroup)
     implementation(Deps.roomRuntimeGroup)
     kapt(Deps.jetpackRoomCompiler)
+    implementation(kotlin("reflect"))
 }

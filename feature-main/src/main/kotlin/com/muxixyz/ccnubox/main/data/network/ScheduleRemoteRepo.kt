@@ -22,12 +22,12 @@ class ScheduleRemoteRepo(retrofitClients: RetrofitClients) {
     suspend fun getScheduleById(id: String): Result<Schedule> {
         return Result.Success(
             Schedule(
-                0,
+                "",
                 "",
                 "",
                 false,
-                Date(),
-                Date(),
+                null,
+                null,
                 0,
                 "",
                 0,
@@ -35,22 +35,22 @@ class ScheduleRemoteRepo(retrofitClients: RetrofitClients) {
                 false,
                 0,
                 0,
-                Date(),
-                Date(),
+                Calendar.getInstance(),
+                null,
                 ""
             )
         )
     }
 
-    suspend fun deleteSchedule(id: Int) {
+    suspend fun deleteSchedule(id: String) {
         TODO("Not yet implemented")
     }
 
-    suspend fun updateSchedule(id: Int, schedule: Schedule) {
+    suspend fun updateSchedule(id: String, schedule: Schedule) {
         TODO("Not yet implemented")
     }
 
-    suspend fun updateScheduleDone(id: Int, done: Boolean) {
+    suspend fun updateScheduleDone(id: String, done: Boolean) {
         TODO("Not yet implemented")
     }
 

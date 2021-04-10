@@ -17,7 +17,7 @@ class ScheduleRepository(
     private val scheduleRemote: ScheduleRemoteRepo
 ) {
 
-    private var cachedSchedules: ConcurrentMap<Int, Schedule>? = null
+    private var cachedSchedules: ConcurrentMap<String, Schedule>? = null
 
     suspend fun getSchedules(forceUpdate: Boolean): Result<List<Schedule>> {
         return withContext(Dispatchers.IO) {
@@ -118,7 +118,7 @@ class ScheduleRepository(
         // Do in memory cache update to keep the app UI up to date
         cacheAndPerform(schedule) {
             coroutineScope {
-                launch { scheduleRemote.addSchedule(it) }
+//                launch { scheduleRemote.addSchedule(it) }
                 launch { scheduleLocal.addSchedule(it) }
             }
         }
@@ -135,7 +135,7 @@ class ScheduleRepository(
         }
     }
 
-    suspend fun completeSchedule(scheduleId: Int) {
+    suspend fun completeSchedule(scheduleId: String) {
         withContext(Dispatchers.IO) {
             getScheduleById(scheduleId)?.let {
                 completeSchedule(it)
@@ -153,7 +153,7 @@ class ScheduleRepository(
         cachedSchedules?.clear()
     }
 
-    suspend fun deleteSchedule(scheduleId: Int) {
+    suspend fun deleteSchedule(scheduleId: String) {
         coroutineScope {
             launch { scheduleRemote.deleteSchedule(scheduleId) }
             launch { scheduleLocal.deleteSchedule(scheduleId) }
@@ -162,5 +162,5 @@ class ScheduleRepository(
         cachedSchedules?.remove(scheduleId)
     }
 
-    private fun getScheduleById(id: Int) = cachedSchedules?.get(id)
+    private fun getScheduleById(id: String) = cachedSchedules?.get(id)
 }

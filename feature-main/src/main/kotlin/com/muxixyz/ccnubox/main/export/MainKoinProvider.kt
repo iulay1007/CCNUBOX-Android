@@ -12,6 +12,7 @@ import com.muxixyz.ccnubox.main.ui.main.MainViewModel
 import com.muxixyz.ccnubox.main.ui.schedule.ScheduleFragment
 import com.muxixyz.ccnubox.main.ui.schedule.ScheduleViewModel
 import com.muxixyz.ccnubox.main.ui.todo.TodoFragment
+import com.muxixyz.ccnubox.main.ui.todo.TodoPopupViewModel
 import com.muxixyz.ccnubox.main.ui.todo.TodoViewModel
 import org.koin.android.ext.koin.androidApplication
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -28,6 +29,7 @@ val mainKoinProvider: Module = module {
     viewModel { HomeViewModel() }
     viewModel { ScheduleViewModel(get(), get()) }
     viewModel { TodoViewModel(get()) }
+    viewModel { TodoPopupViewModel(get()) }
 
     single<IMainExportApi> { MainApi(get(), get()) }
 

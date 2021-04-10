@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="listener"
+            type="com.muxixyz.ccnubox.main.ui.todo.TodoItemListener" />
+
+        <variable
+            name="schedule"
+            type="com.muxixyz.ccnubox.main.data.domain.Schedule" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="@{() -> listener.onItemClick(schedule)}">
+
+        <CheckBox
+            android:id="@+id/item_todo_checkbox"
+            style="@style/todo_checkbox_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="20dp"
+            android:buttonTint="#8e90ff"
+            android:checked="@{schedule.done}"
+            android:onClick="@{(v) -> listener.onCheckChanged(v,schedule)}"
+            android:scaleX="1.0"
+            android:scaleY="1.0"
+            android:text="@{schedule.content}"
+            android:textColor="@android:color/black"
+            tools:text="小组讨论" />
+
+    </LinearLayout>
+</layout>

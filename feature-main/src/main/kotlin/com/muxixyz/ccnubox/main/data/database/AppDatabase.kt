@@ -8,7 +8,7 @@ import androidx.room.RoomDatabase
         DatabaseSchedule::class, DatabaseTimetableRecord::class],
     version = 1
 )
-abstract class AppDatabase() : RoomDatabase() {
+abstract class  AppDatabase() : RoomDatabase() {
     abstract fun courseDao(): CourseDao
     abstract fun derivedScheduleDao(): DerivedScheduleDao
     abstract fun scheduleDao(): ScheduleDao

@@ -15,8 +15,8 @@ data class NetworkScheduleContainer(val todos: List<NetworkSchedule>) {
                 title = it.title,
                 content = it.content,
                 isInterval = false,
-                startTime = dateFormat.format(it.start_time)!!,
-                endTime = dateFormat.format(it.end_time)!!,
+                startTime = it.start_time,
+                endTime = it.end_time,
                 repeatMode = it.repeat_mode,
                 cron = it.cron,
                 kind = it.kind,
@@ -24,8 +24,8 @@ data class NetworkScheduleContainer(val todos: List<NetworkSchedule>) {
                 done = it.done != 0,
                 categoryId = it.category_id,
                 cellColorId = (0..10).random(),
-                createdAt = if (it.created_at.isNullOrEmpty()) null else dateFormat.format(it.created_at!!),
-                updatedAt = if (it.updated_at.isNullOrEmpty()) null else dateFormat.format(it.updated_at!!),
+                createdAt = it.created_at,
+                updatedAt = it.updated_at,
                 sortKey = System.currentTimeMillis().toString()
             )
         }
@@ -33,11 +33,11 @@ data class NetworkScheduleContainer(val todos: List<NetworkSchedule>) {
 }
 
 data class NetworkSchedule(
-    var id: Int,
+    var id: String,
     var title: String,
     var content: String,
-    var start_time: String,
-    var end_time: String,
+    var start_time: Long?,
+    var end_time: Long?,
     var repeat_mode: Int,// repeat_mode(重复规则) 0表示不重复，1表示基于日历规则重复，2表示基于当前学期周数重复
     var cron: String,    // cron表达式， repeat_mode不等于0时有效，表示具体怎么重复
     var priority: Int, // 0-3 优先级依次递增
@@ -45,8 +45,8 @@ data class NetworkSchedule(
     var done: Int, // 针对待办，0表示未完成，1表示已完成
     var user_id: Int,
     var category_id: Int,     // 0表示默认标签
-    var created_at: String?,
-    var updated_at: String?,
+    var created_at: Long,
+    var updated_at: Long?,
     var deleted_at: String
 )
 
@@ -61,8 +61,10 @@ fun NetworkScheduleContainer.asDomainModel(): List<Schedule> {
             title = it.title,
             content = it.content,
             isInterval = false,
-            startTime = dateFormat.parse(it.start_time)!!,
-            endTime = dateFormat.parse(it.end_time)!!,
+            startTime = if (it.start_time == null) null else Calendar.getInstance()
+                .also { calendar -> calendar.timeInMillis = it.start_time!! },
+            endTime = if (it.end_time == null) null else Calendar.getInstance()
+                .also { calendar -> calendar.timeInMillis = it.end_time!! },
             repeatMode = it.repeat_mode,
             cron = it.cron,
             kind = it.kind,
@@ -70,8 +72,10 @@ fun NetworkScheduleContainer.asDomainModel(): List<Schedule> {
             done = it.done != 0,
             categoryId = it.category_id,
             cellColorId = (0..10).random(),
-            createdAt = if (it.created_at.isNullOrEmpty()) null else dateFormat.parse(it.created_at!!),
-            updatedAt = if (it.updated_at.isNullOrEmpty()) null else dateFormat.parse(it.updated_at!!),
+            createdAt = Calendar.getInstance()
+                .also { calendar -> calendar.timeInMillis = it.created_at },
+            updatedAt = if (it.updated_at == null) null else Calendar.getInstance()
+                .also { calendar -> calendar.timeInMillis = it.updated_at!! },
             sortKey = System.currentTimeMillis().toString()
         )
     }
