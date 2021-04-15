@@ -26,8 +26,8 @@ class ScheduleRemoteRepo(retrofitClients: RetrofitClients) {
                 "",
                 "",
                 false,
-                Date(),
-                Date(),
+                null,
+                null,
                 0,
                 "",
                 0,
@@ -35,8 +35,8 @@ class ScheduleRemoteRepo(retrofitClients: RetrofitClients) {
                 false,
                 0,
                 0,
-                Date(),
-                Date(),
+                Calendar.getInstance(),
+                null,
                 ""
             )
         )

@@ -6,24 +6,24 @@ import java.text.DateFormat.*
 import java.util.*
 
 @Entity
-data class DatabaseSchedule constructor(
+data class DatabaseSchedule(
     @PrimaryKey
     var id: String,
     var title: String,
-    var content: String,
+    var content: String?,
     var isInterval: Boolean, // false 为时间点，true 为时间段。时间点类型的只有一个 startTime
-    var startTime: String,
-    var endTime: String,
+    var startTime: Long?,
+    var endTime: Long?,
     var repeatMode: Int, // repeat_mode(重复规则) 0表示不重复，1表示基于日历规则重复，2表示基于当前学期周数重复
     var cron: String?, // 重复的 cron 表达式
     var kind: Int, // 0 是日常，1 是待办
     var priority: Int, // 优先级 0 1 2 3 优先级依次递增
     var done: Boolean,
-    var categoryId: Int, // 分类 id
-    var cellColorId: Int, // 颜色 id，随机生成一个 0-10 之间的数即可。用于去色板里获取格子颜色
-    var createdAt: String?,
-    var updatedAt: String?,
-    var sortKey: String // 用于排序的 key，因为其他产品待办列表里都可以自己调整顺序，所以需要给一个字段。初始值可以给毫秒级时间戳
+    var categoryId: Int?, // 分类 id
+    var cellColorId: Int?, // 颜色 id，随机生成一个 0-10 之间的数即可。用于去色板里获取格子颜色
+    var createdAt: Long,
+    var updatedAt: Long?,
+    var sortKey: String? // 用于排序的 key，因为其他产品待办列表里都可以自己调整顺序，所以需要给一个字段。初始值可以给毫秒级时间戳
 )
 
 fun List<DatabaseSchedule>.asDomainModel(): List<Schedule> {
@@ -33,15 +33,16 @@ fun List<DatabaseSchedule>.asDomainModel(): List<Schedule> {
 }
 
 fun DatabaseSchedule.asDomainModel(): Schedule {
-    val dateFormat = getDateTimeInstance(LONG, LONG, Locale.CHINA)
     return let {
         Schedule(
             id = it.id,
             title = it.title,
             content = it.content,
             isInterval = it.isInterval,
-            startTime = dateFormat.parse(it.startTime)!!,
-            endTime = dateFormat.parse(it.endTime)!!,
+            startTime = if (it.startTime == null) null else Calendar.getInstance()
+                .also { calendar -> calendar.timeInMillis = it.startTime!! },
+            endTime = if (it.endTime == null) null else Calendar.getInstance()
+                .also { calendar -> calendar.timeInMillis = it.endTime!! },
             repeatMode = it.repeatMode,
             cron = it.cron,
             kind = it.kind,
@@ -49,8 +50,10 @@ fun DatabaseSchedule.asDomainModel(): Schedule {
             done = it.done,
             categoryId = it.categoryId,
             cellColorId = it.cellColorId,
-            createdAt = if (it.createdAt.isNullOrEmpty()) null else dateFormat.parse(it.createdAt!!),
-            updatedAt = if (it.updatedAt.isNullOrEmpty()) null else dateFormat.parse(it.updatedAt!!),
+            createdAt = Calendar.getInstance()
+                .also { calendar -> calendar.timeInMillis = it.createdAt },
+            updatedAt = if (it.updatedAt == null) null else Calendar.getInstance()
+                .also { calendar -> calendar.timeInMillis = it.updatedAt!! },
             sortKey = it.sortKey
         )
     }
@@ -82,9 +85,4 @@ interface ScheduleDao {
 
     @Query("delete from databaseschedule where id = :scheduleId")
     suspend fun deleteScheduleById(scheduleId: String)
-}
-
-@Database(entities = [DatabaseSchedule::class], version = 1)
-abstract class ScheduleDatabase : RoomDatabase() {
-    abstract fun scheduleDao(): ScheduleDao
 }

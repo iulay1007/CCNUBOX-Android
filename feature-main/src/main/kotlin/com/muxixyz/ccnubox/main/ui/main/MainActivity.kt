@@ -21,15 +21,26 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelectedListener {
 
-    var mCurrentFragmentTag: String? = "schedule"
+    var mCurrentFragmentTag: String? = null
     val model: MainViewModel by viewModel()
     lateinit var bottomNavView: BottomNavigationView
+
+    companion object {
+        const val TAG_HOME = "home"
+        const val TAG_SCHEDULE = "schedule"
+        const val TAG_TODO = "todo"
+        const val TAG_PROFILE = "profile"
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         val binding =
             DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
+                .apply {
+                    viewModel = model
+                    lifecycleOwner = this@MainActivity
+                }
 //        binding.loadingView
         model.imageListLD.observe(this, Observer {
             if (it.isNullOrEmpty()) {
@@ -53,15 +64,15 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
     }
 
     private fun initView() {
-        showFragment("schedule")
+        showFragment(TAG_HOME)
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            R.id.action_home -> showFragment("home")
-            R.id.action_schedule -> showFragment("schedule")
-            R.id.action_todo-> showFragment("todo")
-            R.id.action_profile -> showFragment("profile")
+            R.id.action_home -> showFragment(TAG_HOME)
+            R.id.action_schedule -> showFragment(TAG_SCHEDULE)
+            R.id.action_todo -> showFragment(TAG_TODO)
+            R.id.action_profile -> showFragment(TAG_PROFILE)
         }
         return true
     }
@@ -73,12 +84,12 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
         val fragmentTransaction = fm.beginTransaction()
 
-        if (targetFragment != null) {
-            fragmentTransaction.hide(targetFragment)
-        }
         if (mCurrentFragment != null) {
+            fragmentTransaction.hide(mCurrentFragment)
+        }
+        if (targetFragment != null) {
             mCurrentFragmentTag = tag
-            fragmentTransaction.show(mCurrentFragment)
+            fragmentTransaction.show(targetFragment)
             fragmentTransaction.commitNow()
             return
         }
@@ -87,20 +98,15 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
 
     private fun showFragment(tag: String, fragmentTransaction: FragmentTransaction) {
 
-        val scheduleFragment: ScheduleFragment by inject()
-        val homeFragment: HomeFragment by inject()
-        val todoFragment: TodoFragment by inject()
         val profileFragment by inject<IProfileFragment>()
 
-        // todo koin DI fragment
         val fragment: Fragment = when (tag) {
-            "schedule" -> scheduleFragment
-            "home" -> homeFragment
-            "todo" -> todoFragment
-            "profile" -> profileFragment
-            else -> homeFragment
+            TAG_HOME -> HomeFragment()
+            TAG_SCHEDULE -> ScheduleFragment()
+            TAG_TODO -> TodoFragment()
+            else -> profileFragment
         }
-        fragmentTransaction.remove(fragment).commit()
+
         fragmentTransaction.add(R.id.home_content, fragment, tag)
         mCurrentFragmentTag = tag
         fragmentTransaction.commitNow()

@@ -118,7 +118,7 @@ class ScheduleRepository(
         // Do in memory cache update to keep the app UI up to date
         cacheAndPerform(schedule) {
             coroutineScope {
-                launch { scheduleRemote.addSchedule(it) }
+//                launch { scheduleRemote.addSchedule(it) }
                 launch { scheduleLocal.addSchedule(it) }
             }
         }

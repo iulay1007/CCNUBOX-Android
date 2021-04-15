@@ -58,8 +58,3 @@ interface TimetableRecordDao {
     @Query("delete from databasetimetablerecord where id = :timetableRecordsId")
     suspend fun deleteTimetableRecordById(timetableRecordsId: String)
 }
-
-@Database(entities = [DatabaseTimetableRecord::class], version = 1)
-abstract class TimetableRecordDatabase : RoomDatabase() {
-    abstract fun timetableRecordDao(): TimetableRecordDao
-}
