@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="viewType"
+            type="int" />
+
+        <variable
+            name="adapter"
+            type="com.muxixyz.ccnubox.main.ui.schedule.ScheduleViewAdapter" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/cl_schedule_tb"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_alignParentTop="true">
+
+            <TextView
+                android:id="@+id/tv_schedule_change"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="40dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="10dp"
+                android:padding="2dp"
+                android:text="视图切换"
+                android:textColor="#6F70F6"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <TextView
+                android:id="@+id/tv_schedule_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:clickable="@{viewType == 1 ? true : false}"
+                android:padding="2dp"
+                android:textColor="#333333"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                tools:text="第14周" />
+
+            <ImageView
+                android:id="@+id/iv_schedule_drop_down"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_baseline_arrow_drop_down_24"
+                android:visibility="@{viewType == 1 ? View.VISIBLE : View.GONE}"
+                app:layout_constraintBottom_toBottomOf="@+id/tv_schedule_title"
+                app:layout_constraintStart_toEndOf="@id/tv_schedule_title"
+                app:layout_constraintTop_toTopOf="@+id/tv_schedule_title" />
+
+            <ImageButton
+                android:id="@+id/ib_schedule_qr"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:layout_marginEnd="26dp"
+                android:layout_marginBottom="8dp"
+                android:background="?android:attr/selectableItemBackgroundBorderless"
+                android:padding="2dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/more_app"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.viewpager2.widget.ViewPager2
+            android:id="@+id/vp_schedule_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/cl_schedule_tb"
+            app:adapter="@{adapter}" />
+
+        <FrameLayout
+            android:id="@+id/fl_schedule_content_mask"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/cl_schedule_tb"
+            android:background="#66000000"
+            android:visibility="invisible" />
+
+    </RelativeLayout>
+</layout>

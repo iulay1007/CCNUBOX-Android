@@ -38,29 +38,14 @@ class MainActivity : BaseActivity(), BottomNavigationView.OnNavigationItemSelect
         val binding =
             DataBindingUtil.setContentView<ActivityMainBinding>(this, R.layout.activity_main)
                 .apply {
-                    viewModel = model
                     lifecycleOwner = this@MainActivity
                 }
-//        binding.loadingView
-        model.imageListLD.observe(this, Observer {
-            if (it.isNullOrEmpty()) {
-                Toast.makeText(
-                    this@MainActivity,
-                    "Error when loading Carousel.",
-                    Toast.LENGTH_SHORT
-                ).show()
-            } else {
-//            adapter.refresh(it)
-            }
-        })
+        binding.loadingView
 
         bottomNavView = findViewById(R.id.home_bottom_nav)
         bottomNavView.setOnNavigationItemSelectedListener(this)
 
         initView()
-
-
-        model.refreshSchedules()
     }
 
     private fun initView() {
