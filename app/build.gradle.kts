@@ -34,7 +34,7 @@ android {
             isMinifyEnabled = false
             isTestCoverageEnabled = true
             ndk {
-                setAbiFilters(setOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86"))
+//                setAbiFilters(setOf("arm64-v8a", "armeabi-v7a", "x86_64", "x86"))
             }
         }
 
@@ -44,7 +44,7 @@ android {
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"))
             proguardFiles(file("proguard-rules.pro"))
             ndk {
-                setAbiFilters(setOf("arm64-v8a", "armeabi-v7a"))
+//                setAbiFilters(setOf("arm64-v8a", "armeabi-v7a"))
             }
         }
     }

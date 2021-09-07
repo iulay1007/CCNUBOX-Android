@@ -30,6 +30,7 @@ class ScheduleFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        mAdapter = ScheduleWeekViewAdapter(this)
         dataBinding =
             FragmentScheduleBinding.inflate(
                 layoutInflater, container, false
@@ -53,6 +54,7 @@ class ScheduleFragment : Fragment() {
             )
         )
 
+        dataBinding.tvScheduleTitle.setText("未导入课表")
         return dataBinding.root
     }
 
@@ -60,16 +62,16 @@ class ScheduleFragment : Fragment() {
     class ScheduleOnPagerChangeCallback(val vp: ViewPager2, val adapter: ScheduleViewAdapter) :
         ViewPager2.OnPageChangeCallback() {
         override fun onPageSelected(position: Int) {
-            when (position) {
-                0 -> {
-                    adapter.leftMove()
-                    vp.setCurrentItem(1, false)
-                }
-                2 -> {
-                    adapter.rightMove()
-                    vp.setCurrentItem(1, false)
-                }
-            }
+//            when (position) {
+//                0 -> {
+//                    adapter.leftMove()
+//                    vp.setCurrentItem(1, false)
+//                }
+//                2 -> {
+//                    adapter.rightMove()
+//                    vp.setCurrentItem(1, false)
+//                }
+//            }
         }
     }
 
