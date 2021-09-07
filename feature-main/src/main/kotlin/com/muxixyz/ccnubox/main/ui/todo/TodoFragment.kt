@@ -5,17 +5,20 @@ import android.util.Log
 import android.view.*
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
-import com.muxixyz.android.iokit.Result
-import com.muxixyz.android.iokit.succeeded
 import com.muxixyz.ccnubox.home.R
 import com.muxixyz.ccnubox.home.databinding.FragmentTodoBinding
 import com.muxixyz.ccnubox.home.databinding.TodoAddPopupBinding
+import com.muxixyz.ccnubox.main.data.database.DatabaseSchedule
 import org.koin.androidx.viewmodel.ext.android.getViewModel
 import org.koin.androidx.viewmodel.ext.android.viewModel
 import java.util.*
+import androidx.lifecycle.Observer
+import com.muxixyz.ccnubox.main.data.database.asDomainModel
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
 
-class TodoFragment : Fragment() {
+
+class TodoFragment : Fragment(){
 
     private lateinit var listAdapter: TodoListAdapter
     lateinit var dataBinding: FragmentTodoBinding
@@ -38,9 +41,42 @@ class TodoFragment : Fragment() {
         Toast.makeText(context, "Todo fragment show", Toast.LENGTH_SHORT).show()
 
         initFabAndPopupWindow()
+        mTodoViewModel.getScheduleList().observe(viewLifecycleOwner, Observer {
+            val items: List<DatabaseSchedule> = it
+            listAdapter.submitList(items.asDomainModel())
+            Log.d("getScheduleList",items.asDomainModel().toString())
+        })
+
+        mTodoViewModel.onEdit().observe(viewLifecycleOwner, Observer {
+            Log.d("editOb",it.toString())
+            listAdapter.setEdit(it)
+            dataBinding.editing = it
+            if (it) {
+                dataBinding.todoEditFinish.visibility = View.VISIBLE
+                dataBinding.todoEdit.visibility = View.GONE
+                dataBinding.todoSort.visibility = View.GONE
+            }
+        })
+
+        dataBinding.todoEditFinish.setOnClickListener {
+            mTodoViewModel.onEdit()
+            dataBinding.todoEditFinish.visibility = View.GONE
+            dataBinding.todoEdit.visibility = View.VISIBLE
+            dataBinding.todoSort.visibility = View.VISIBLE
+
+
+        }
+
+        dataBinding.todoDeleteItem.setOnClickListener{
+            var lists = listAdapter.getCheckIdList()
+            GlobalScope.launch{
+                mTodoViewModel.deleteItemsByIdList(lists)
+            }
+            Log.d("todoEditFinish",listAdapter.getCheckIdList().toString())
+        }
+
         return dataBinding.root
     }
-
 
     private fun initFabAndPopupWindow() {
         if (!this::mPopupBinding.isInitialized) {
@@ -62,6 +98,8 @@ class TodoFragment : Fragment() {
             mPopupWindow.apply {
                 showAtLocation(dataBinding.root, Gravity.BOTTOM, 0, 0)
                 darkenBackground(0.7f)
+                //setOnDismissListener { darkenBackground(1.0f) }
+
             }
         }
 
@@ -117,6 +155,7 @@ class TodoFragment : Fragment() {
                 mPopupBinding.viewmodel?.date?.value = Calendar.getInstance().apply {
                     set(year, month, dayOfMonth)
                 }
+
                 datePicker.dismiss()
             }
     }
@@ -154,7 +193,7 @@ class TodoFragment : Fragment() {
                 mTimePickerPopupWindow.dismiss()
             }
             findViewById<TextView>(R.id.todo_time_finish).setOnClickListener {
-                mPopupBinding.viewmodel?.time?.value?.apply {
+                mPopupBinding.viewmodel?.time?.value = Calendar.getInstance().apply {
                     set(Calendar.HOUR_OF_DAY, h)
                     set(Calendar.MINUTE, m)
                 }
@@ -208,39 +247,31 @@ class TodoFragment : Fragment() {
     }
 
     private fun setupListAdapter() {
-
-        listAdapter = TodoListAdapter(mutableListOf(), mTodoViewModel)
-
-        dataBinding.todoList.apply {
-            layoutManager = LinearLayoutManager(context)
-            adapter = listAdapter
-        }
+        listAdapter = TodoListAdapter()
+        dataBinding.todoList.adapter = listAdapter
     }
 
     private fun refreshData() {
-        if (this::listAdapter.isInitialized) {
-            Log.e("TodoFragment", "refresh")
-            val schedules = mTodoViewModel.getAllSchedules()
-
-            if (schedules == null) {
-                Log.e("TodoFragment", "schedules == null")
-                return
-            }
-
-            if (schedules.succeeded) {
-                (schedules as Result.Success).data.let {
-                    listAdapter.setTodos(it)
-                    Log.e("TodoFragment", "refresh success " + it.size)
-                }
-            } else {
-                (schedules as Result.Error).exception.stackTrace.let(::println)
-                Log.e("TodoFragment", "refresh error")
-            }
-        }
+//        if (this::listAdapter.isInitialized) {
+//            Log.e("TodoFragment", "refresh")
+//            mTodoViewModel.getAllSchedules(object :
+//                ScheduleRepository.LoadSchedulesCallback {
+//                override fun onSchedulesLoaded(schedules: List<Schedule>) {
+//                    listAdapter.setTodos(schedules)
+//                }
+//
+//                override fun onDataNotAvailable(message: String) {
+//                    Toast.makeText(context, message, Toast.LENGTH_SHORT).show()
+//                }
+//
+//            })
+//        }
     }
 
     override fun onDestroy() {
         super.onDestroy()
         mPopupWindow.dismiss()
     }
+
+
 }

@@ -21,6 +21,7 @@ dependencies {
     implementation(Deps.networkGroup)
     implementation(Deps.jetpackLifeCycleRuntimeGroup)
     implementation(Deps.roomRuntimeGroup)
+    implementation("androidx.lifecycle:lifecycle-livedata-ktx:2.3.1")
     kapt(Deps.jetpackRoomCompiler)
     implementation(kotlin("reflect"))
 }

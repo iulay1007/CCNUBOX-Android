@@ -25,7 +25,7 @@ class ScheduleViewModel(
                 // You may ned to do some model transform for UI here
                 // ...
                 if (res is Result.Success)
-                    imageListLD.postValue(res.data)
+                    imageListLD.postValue(res.data!!)
                 else
                     throw(Exception("getSchedules has something wrong"))
             } catch (e: Exception) {

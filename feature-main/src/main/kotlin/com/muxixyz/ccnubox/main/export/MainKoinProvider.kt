@@ -25,24 +25,25 @@ val mainKoinProvider: Module = module {
     single { TodoFragment() }
     single { HomeFragment() }
 
-    viewModel { MainViewModel(get()) }
-    viewModel { HomeViewModel() }
-    viewModel { ScheduleViewModel(get(), get()) }
-    viewModel { TodoViewModel(get()) }
-    viewModel { TodoPopupViewModel(get()) }
-
-    single<IMainExportApi> { MainApi(get(), get()) }
-
-    //network
-    single { ScheduleRemoteRepo(get()) }
-
-    single { TimetableRemoteRepo(get()) }
 
     // database
     single {
         Room.databaseBuilder(androidApplication(), AppDatabase::class.java, "ccnubox")
             .build()
     }
+
+    single<IMainExportApi> { MainApi(get(), get()) }
+
+
+    //network
+    single { ScheduleRemoteRepo(get()) }
+
+    single { TimetableRemoteRepo(get()) }
+
+
+
+
+
     single { get<AppDatabase>().scheduleDao() }
 
     single { get<AppDatabase>().derivedScheduleDao() }
@@ -59,4 +60,11 @@ val mainKoinProvider: Module = module {
     single { ScheduleRepository(get(), get()) }
 
     single { TimetableRepository(get(), get()) }
+
+    viewModel { MainViewModel(get()) }
+    viewModel { HomeViewModel() }
+    viewModel { ScheduleViewModel(get(), get()) }
+    viewModel { TodoViewModel(get()) }
+    viewModel { TodoPopupViewModel(get()) }
+
 }

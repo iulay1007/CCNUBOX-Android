@@ -1,52 +1,141 @@
 package com.muxixyz.ccnubox.main.ui.todo
 
+import android.graphics.Color
+import com.muxixyz.ccnubox.main.data.domain.Schedule
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.muxixyz.ccnubox.home.databinding.ItemTodoBinding
-import com.muxixyz.ccnubox.main.data.domain.Schedule
+import java.util.*
+import android.util.Log
+import android.widget.CheckBox
+import androidx.constraintlayout.widget.ConstraintLayout
 
-class TodoListAdapter(val mTodos: MutableList<Schedule>, val viewModel: TodoViewModel) :
-    RecyclerView.Adapter<VH>() {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VH {
-        val binding = ItemTodoBinding.inflate(LayoutInflater.from(parent.context), parent, false)
 
-        return VH(binding)
+
+class TodoListAdapter : ListAdapter<Schedule, RecyclerView.ViewHolder>(ScheduleDiffCallback()) {
+    private var edit = false
+
+    private var itemIdSet :MutableSet<String> = mutableSetOf()
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+        return VH(
+            ItemTodoBinding.inflate(
+                LayoutInflater.from(parent.context),
+                parent,
+                false
+            )
+        )
     }
 
-    override fun getItemCount(): Int {
-        return mTodos.size
-    }
+    override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+        val schedule = getItem(position)
+        (holder as VH).bind(schedule, edit)
+        holder.editCb.isChecked = false
+        holder.itemConstraintLayout.setBackgroundColor(Color.parseColor("#ffffff"))
+        holder.editCb.setOnClickListener {
+            Log.d("OnClickListener","click"+position+holder.editCb.isChecked+schedule.id)
+            holder.editCb.let {
+                if (it.isChecked) {
+                    holder.itemConstraintLayout.setBackgroundColor(Color.parseColor("#EBE1FB"))
+                    itemIdSet.add(schedule.id)
 
-
-    override fun onBindViewHolder(holder: VH, position: Int) {
-        with(holder.binding) {
-            schedule = mTodos[position]
-            listener = object : TodoItemListener {
-                override fun onItemClick(todo: Schedule) {
-                    viewModel.openItem(todo.id)
+                } else {
+                    holder.itemConstraintLayout.setBackgroundColor(Color.parseColor("#ffffff"))
+                    itemIdSet.remove(schedule.id)
                 }
+            }
+        }
 
-                override fun onCheckChanged(view: View, todo: Schedule) {
-                    val checked = (view as CheckBox).isChecked
-                    viewModel.completeTodo(todo.id, checked)
+
+
+    }
+
+    fun getCheckIdList():MutableList<String>{
+        return itemIdSet.toMutableList()
+    }
+
+    fun setEdit(edit: Boolean) {
+        this.edit = edit
+        notifyDataSetChanged()
+    }
+
+    class VH(private val binding: ItemTodoBinding) : RecyclerView.ViewHolder(binding.root) {
+
+        var editCb: CheckBox = binding.itemTodoEdit
+
+        var itemConstraintLayout: ConstraintLayout = binding.itemConstraintLayout
+
+
+        //var listener: TodoItemListener? = null
+
+        var schedule: Schedule? = null
+
+
+        //var color: Int = R.color.colorNoPriority
+
+        private val _time = MutableLiveData<String>()
+        val time: LiveData<String> get() = _time
+
+
+
+//        fun bind(schedule: Schedule, editing: Boolean) {
+//            this.schedule = schedule
+//            this.editing = editing
+//
+//            _time.value = formatTimeMillis(schedule.endTime)
+//            color = when (schedule.priority) {
+//                1 -> R.color.colorLowPriority
+//                2 -> R.color.colorMidPriority
+//                3 -> R.color.colorHighPriority
+//                else -> R.color.colorNoPriority
+//            }
+
+        fun bind(item: Schedule, edit: Boolean) {
+            Log.d("bindtime", formatTimeMillis(item.startTime))
+            Log.d("bindtime", item.endTime.toString())
+            Log.d("bindtime", item.startTime.toString())
+
+            binding.apply {
+                schedule = item
+                time = formatTimeMillis(item.startTime)
+                editing = edit
+                executePendingBindings()
+            }
+        }
+
+
+        fun formatTimeMillis(time: Calendar?): String {
+            if (time == null) return ""
+
+            val curCalendar = Calendar.getInstance()
+            with(time) {
+                return if (get(Calendar.YEAR) == curCalendar.get(Calendar.YEAR) &&
+                    get(Calendar.MONTH) == curCalendar.get(Calendar.MONTH) &&
+                    get(Calendar.DAY_OF_MONTH) == curCalendar.get(Calendar.DAY_OF_MONTH)
+                ) {
+                    "${get(Calendar.HOUR)}:${get(Calendar.MINUTE)}"
+                } else {
+                    "${get(Calendar.MONTH)}月${get(Calendar.DAY_OF_MONTH)}日"
                 }
             }
         }
     }
 
-    fun setTodos(todos: List<Schedule>) {
-        mTodos.clear()
-        mTodos.addAll(todos)
-        notifyDataSetChanged()
+
+    private class ScheduleDiffCallback : DiffUtil.ItemCallback<Schedule>() {
+
+        override fun areItemsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Schedule, newItem: Schedule): Boolean {
+            return oldItem == newItem
+        }
     }
-}
 
-class VH(val binding: ItemTodoBinding) : RecyclerView.ViewHolder(binding.root)
-
-interface TodoItemListener {
-    fun onItemClick(todo: Schedule)
-    fun onCheckChanged(view: View, todo: Schedule)
 }

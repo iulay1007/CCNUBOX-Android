@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.muxixyz.android.iokit.Result
 import com.muxixyz.android.iokit.succeeded
 import com.muxixyz.ccnubox.main.data.domain.Schedule
+import com.muxixyz.ccnubox.main.data.database.DatabaseSchedule
 import com.muxixyz.ccnubox.main.data.repository.ScheduleRepository
 import kotlinx.coroutines.launch
 import java.util.*
@@ -23,6 +24,11 @@ class TodoViewModel(private val repository: ScheduleRepository) : ViewModel() {
     val isLoadingLD = MutableLiveData(false)
     val finishedNumLD = MutableLiveData<Int>(todoFinishedListLD.value?.size)
 
+     var edit = MutableLiveData(true)
+
+    fun getScheduleList (): LiveData<List<DatabaseSchedule>>{
+    return repository.getScheduleList()
+    }
     fun refreshSchedules() {
         isLoadingLD.value = true
         viewModelScope.launch {
@@ -42,12 +48,14 @@ class TodoViewModel(private val repository: ScheduleRepository) : ViewModel() {
         }
     }
 
-    fun onEdit() {
+    fun onEdit() : MutableLiveData<Boolean>{
         Log.e("edit", "11111111111")
+        edit.value = edit.value == false
+        return edit
     }
 
     fun onSort() {
-        Log.e("edit", "11111111111")
+        Log.e("sort", "11111111111")
     }
 
     fun openItem(id: String) {
@@ -61,15 +69,31 @@ class TodoViewModel(private val repository: ScheduleRepository) : ViewModel() {
         TODO("deal with result")
     }
 
-    fun getAllSchedules(): Result<List<Schedule>>? {
-        Log.e("TdoViewModel", "getAllSchedules()")
-        var result: Result<List<Schedule>>? = null
-        viewModelScope.launch {
-            result = repository.getSchedules(false)
-            Log.e("TodoViewModel","1")
+    suspend fun deleteItemsByIdList(idList: MutableList<String>){
+        for(id in idList){
+
+        repository.deleteSchedule(id)
         }
-        Log.e("TodoViewModel","2")
-        return result
     }
+
+    fun getAllSchedules(callback: ScheduleRepository.LoadSchedulesCallback) {
+        Log.e("TdoViewModel", "getAllSchedules()")
+        viewModelScope.launch {
+            repository.getSchedules(false).let {
+                if (it.succeeded) {
+                    (it as Result.Success).data.let { schedules ->
+                        callback.onSchedulesLoaded(schedules)
+                    }
+                } else {
+                    (it as Result.Error).exception.message.let { msg ->
+                        callback.onDataNotAvailable(msg ?: "")
+                    }
+                }
+            }
+        }
+    }
+
+
+
 
 }

@@ -41,6 +41,9 @@ class TodoPopupViewModel(val repository: ScheduleRepository) : ViewModel() {
         val titleValue = title.value ?: ""
         Log.e("complete", titleValue)
         val startTimeValue = time.value
+        Log.d("date",date.value.toString())
+        Log.d("startTimeValue",time.value.toString())
+
         val priorityValue = priority.value ?: 0
         val schedule = Schedule(
             UUID.randomUUID().toString(),

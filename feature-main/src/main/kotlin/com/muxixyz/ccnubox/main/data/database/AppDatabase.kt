@@ -6,7 +6,7 @@ import androidx.room.RoomDatabase
 @Database(
     entities = [DatabaseCourse::class, DatabaseDerivedSchedule::class,
         DatabaseSchedule::class, DatabaseTimetableRecord::class],
-    version = 1
+    version =1 ,exportSchema = false
 )
 abstract class  AppDatabase() : RoomDatabase() {
     abstract fun courseDao(): CourseDao
@@ -14,3 +14,4 @@ abstract class  AppDatabase() : RoomDatabase() {
     abstract fun scheduleDao(): ScheduleDao
     abstract fun timetableRecordDao(): TimetableRecordDao
 }
+

@@ -16,7 +16,7 @@ buildscript {
 
     dependencies {
         classpath(kotlin("gradle-plugin", version = project.extra["kotlinVersion"].toString()))
-        classpath("com.android.tools.build:gradle:4.1.2")
+        classpath("com.android.tools.build:gradle:4.2.2")
         classpath("org.koin:koin-gradle-plugin:2.1.6")
 //        classpath("me.2bab:bro-gradle-plugin:1.3.6")
         classpath("com.alibaba:arouter-register:1.0.2")

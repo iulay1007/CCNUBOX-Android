@@ -9,6 +9,8 @@ import com.muxixyz.ccnubox.main.data.domain.asDatabaseModel
 import com.muxixyz.ccnubox.main.data.domain.asDerivedScheduleDatabaseModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import androidx.lifecycle.LiveData
+
 
 class ScheduleLocalRepo(
     context: Context,
@@ -23,6 +25,10 @@ class ScheduleLocalRepo(
         } catch (e: Exception) {
             Result.Error(e)
         }
+    }
+
+    fun getScheduleList(): LiveData<List<DatabaseSchedule>> {
+         return scheduleDao.getScheduleList()
     }
 
     suspend fun getScheduleById(id: String): Result<Schedule> =

@@ -1,6 +1,9 @@
 package com.muxixyz.ccnubox.main.data.repository
 
+import android.util.Log
+import androidx.lifecycle.LiveData
 import com.muxixyz.android.iokit.Result
+import com.muxixyz.ccnubox.main.data.database.DatabaseSchedule
 import com.muxixyz.ccnubox.main.data.database.ScheduleLocalRepo
 import com.muxixyz.ccnubox.main.data.domain.Schedule
 import com.muxixyz.ccnubox.main.data.network.ScheduleRemoteRepo
@@ -71,9 +74,14 @@ class ScheduleRepository(
     }
 
     private suspend fun refreshLocalDataSource(schedules: List<Schedule>) {
-        scheduleLocal.deleteAllSchedules()
+        //TODO
+        //scheduleLocal.deleteAllSchedules()
+        Log.d("refreshLocalDataSource",scheduleLocal.getAllSchedules().toString())
         scheduleLocal.addSchedules(schedules)
+
     }
+
+
 
     private fun refreshCache(schedules: List<Schedule>) {
         cachedSchedules?.clear()
@@ -115,11 +123,16 @@ class ScheduleRepository(
     }
 
     suspend fun addSchedule(schedule: Schedule) {
+        //TODO:sy
         // Do in memory cache update to keep the app UI up to date
         cacheAndPerform(schedule) {
             coroutineScope {
 //                launch { scheduleRemote.addSchedule(it) }
-                launch { scheduleLocal.addSchedule(it) }
+                launch { scheduleLocal.addSchedule(it)
+                Log.d("addSchedule",it.startTime.toString())
+                        Log.d("addSchedule",this@ScheduleRepository.getSchedules(false).toString())
+
+                }
             }
         }
     }
@@ -155,7 +168,8 @@ class ScheduleRepository(
 
     suspend fun deleteSchedule(scheduleId: String) {
         coroutineScope {
-            launch { scheduleRemote.deleteSchedule(scheduleId) }
+            //TODO
+           // launch { scheduleRemote.deleteSchedule(scheduleId) }
             launch { scheduleLocal.deleteSchedule(scheduleId) }
         }
 
@@ -163,4 +177,14 @@ class ScheduleRepository(
     }
 
     private fun getScheduleById(id: String) = cachedSchedules?.get(id)
+
+    interface LoadSchedulesCallback {
+        fun onSchedulesLoaded(schedules: List<Schedule>)
+        fun onDataNotAvailable(message: String)
+    }
+
+    fun getScheduleList(): LiveData<List<DatabaseSchedule>>{
+       return scheduleLocal.getScheduleList()
+    }
+
 }

@@ -18,4 +18,7 @@
     <string name="mid_priority">!! 中优先级</string>
     <string name="high_priority">!!!高优先级</string>
     <string name="no_priority">!!!无优先级</string>
+    <string name="text_check_all">全选</string>
+    <string name="text_move_into_schedule">移入日程</string>
+    <string name="text_finish">完成</string>
 </resources>

@@ -9,6 +9,7 @@ import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidFileProperties
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
+import org.koin.core.logger.Level
 
 
 class CCNUBoxApplication : Application() {
@@ -23,13 +24,15 @@ class CCNUBoxApplication : Application() {
 
     private fun initKoin() {
         startKoin {
-            androidLogger()
+            //androidLogger()
+            androidLogger(Level.ERROR)
             androidContext(this@CCNUBoxApplication)
             androidFileProperties()
             modules(
+                arrayListOf(
                 mainKoinProvider,
                 ioKitKoinProvider,
-                profileKoinProvider
+                profileKoinProvider)
             )
         }
     }

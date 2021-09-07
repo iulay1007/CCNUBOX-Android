@@ -1,5 +1,6 @@
 package com.muxixyz.ccnubox.main.data.database
 
+import androidx.lifecycle.LiveData
 import androidx.room.*
 import com.muxixyz.ccnubox.main.data.domain.Schedule
 import java.text.DateFormat.*
@@ -31,6 +32,7 @@ fun List<DatabaseSchedule>.asDomainModel(): List<Schedule> {
         it.asDomainModel()
     }
 }
+
 
 fun DatabaseSchedule.asDomainModel(): Schedule {
     return let {
@@ -77,6 +79,9 @@ interface ScheduleDao {
     @Update
     suspend fun updateSchedule(schedule: DatabaseSchedule)
 
+    @Query("UPDATE databaseschedule SET kind = :to WHERE id IN (:ids) AND kind LIKE :from")
+    suspend fun changeSchedulesKind(ids: List<String>, from: Int, to: Int)
+
     @Query("UPDATE databaseschedule SET done = :done WHERE id = :scheduleId")
     suspend fun updateDone(scheduleId: String, done: Boolean)
 
@@ -85,4 +90,7 @@ interface ScheduleDao {
 
     @Query("delete from databaseschedule where id = :scheduleId")
     suspend fun deleteScheduleById(scheduleId: String)
+
+    @Query("select * from databaseschedule")
+    fun getScheduleList(): LiveData<List<DatabaseSchedule>>
 }
